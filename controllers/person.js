@@ -14,12 +14,14 @@ router.get('/:id', async (req, res) => {
     res.json(person)
 })
 
+// GET person by name
 router.get('/name/:name', async (req, res) => {
     const { name } = req.params
     const people = await Person.find({ name })
     res.json(people)
 })
 
+// POST create new person
 router.post('/', async (req, res) => {
     try {
         const person = await new Person(req.body).save()
@@ -30,17 +32,26 @@ router.post('/', async (req, res) => {
     }
 })
 
+// DELETE person by id
 router.delete('/:id', async (req, res) => {
-    const { id } = req.params
-    await Person.findByIdAndDelete(id)
-    res.json({ message: 'user deleted' })
+    try {
+        const person = await Person.findByIdAndDelete(req.params.id)
+        res.json(person)
+    } catch (error) {
+        console.error(error)
+        res.json({ message: 'error deleting user.' })
+    }
 })
 
 // PUT update person by id
 router.put('/:id', async (req, res) => {
-    const { id } = req.params
-    await Person.findByIdAndUpdate(id, req.body)
-    res.json({ message: 'user updated' })
+    try {
+        const person = await Person.findByIdAndUpdate(req.params.id, req.body)
+        res.json(person)
+    } catch (error) {
+        console.error(error)
+        res.json({ message: 'error updating user.' })
+    }
 })
 
 module.exports = router
